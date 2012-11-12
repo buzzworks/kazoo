@@ -892,7 +892,7 @@ to_proplist_test() ->
 -spec recursive_to_proplist_test/0 :: () -> no_return().
 recursive_to_proplist_test() ->
     ?assertEqual(?P8, recursive_to_proplist(?D1)),
-    ?assertEqual(?P9, recursive_to_proplist(?D2)),   
+    ?assertEqual(?P9, recursive_to_proplist(?D2)),
     ?assertEqual(?P10, recursive_to_proplist(?D3)),
     ?assertEqual(?P11, lists:map(fun recursive_to_proplist/1, ?D4)),
     ?assertEqual(?P12, recursive_to_proplist(?D6)),
