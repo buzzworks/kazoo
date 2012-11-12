@@ -1,7 +1,7 @@
 %%%-------------------------------------------------------------------
 %%% @copyright (C) 2012, VoIP INC
 %%% @doc
-%%% 
+%%%
 %%% @end
 %%% @contributors
 %%%   James Aimonetti
@@ -19,10 +19,10 @@
 -define(BOTH_DIRECTIONS, [<<"inbound">>, <<"outbound">>]).
 
 -spec candidate_rates/1 :: (ne_binary()) ->
-                                   {'ok', wh_json:json_objects()} |
+                                   {'ok', wh_json:objects()} |
                                    {'error', atom()}.
 -spec candidate_rates/2 :: (ne_binary(), binary()) ->
-                                   {'ok', wh_json:json_objects()} |
+                                   {'ok', wh_json:objects()} |
                                    {'error', atom()}.
 candidate_rates(ToDID) ->
     candidate_rates(ToDID, <<>>).
@@ -48,8 +48,8 @@ find_candidate_rates(DID, _) ->
 
 %% Given a list of rates, return the list of rates whose routes regexes match the given E164
 %% Optionally include direction of the call and options from the client to match against the rate
--spec matching_rates/2 :: (wh_json:json_objects(), ne_binary()) -> wh_json:json_objects().
--spec matching_rates/4 :: (wh_json:json_objects(), ne_binary(), 'undefined' | ne_binary(), trunking_options()) -> wh_json:json_objects().
+-spec matching_rates/2 :: (wh_json:objects(), ne_binary()) -> wh_json:objects().
+-spec matching_rates/4 :: (wh_json:objects(), ne_binary(), api_binary(), trunking_options()) -> wh_json:objects().
 
 matching_rates(Rates, DID) ->
     matching_rates(Rates, DID, undefined, []).
@@ -60,8 +60,7 @@ matching_rates(Rates, DID, Direction, RouteOptions) ->
              matching_rate(Rate, E164, Direction, RouteOptions)
     ].
 
-
--spec sort_rates/1 :: (wh_json:json_objects()) -> wh_json:json_objects().
+-spec sort_rates/1 :: (wh_json:objects()) -> wh_json:objects().
 sort_rates(Rates) ->
     lists:usort(fun sort_rate/2, Rates).
 
@@ -70,14 +69,14 @@ sort_rates(Rates) ->
 %% Return whether the given rate is a candidate for the given DID
 %% taking into account direction of the call and options the DID
 %% needs to have available
--spec matching_rate/4 :: (wh_json:json_object(), ne_binary(), 'undefined' | ne_binary(), trunking_options()) -> boolean().
+-spec matching_rate/4 :: (wh_json:object(), ne_binary(), api_binary(), trunking_options()) -> boolean().
 matching_rate(Rate, E164, Direction, RouteOptions) ->
     (Direction =:= undefined orelse lists:member(Direction, wh_json:get_value([<<"direction">>], Rate, ?BOTH_DIRECTIONS)))
         andalso options_match(RouteOptions, wh_json:get_value([<<"options">>], Rate, []))
         andalso lists:any(fun(Regex) -> re:run(E164, Regex) =/= nomatch end, wh_json:get_value([<<"routes">>], Rate, [])).
 
 %% Return true if RateA has lower weight than RateB
--spec sort_rate/2 :: (wh_json:json_object(), wh_json:json_object()) -> boolean().
+-spec sort_rate/2 :: (wh_json:object(), wh_json:object()) -> boolean().
 sort_rate(RateA, RateB) ->
     wh_json:get_integer_value(<<"weight">>, RateA, 100) =< wh_json:get_integer_value(<<"weight">>, RateB, 100).
 
