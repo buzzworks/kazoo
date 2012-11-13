@@ -214,7 +214,7 @@ handle_info({ibrowse_async_response, ReqId, Chunk}, #state{request_id=ReqId
                                                            ,response_body=RespBody
                                                           }=State) ->
     lager:debug("adding response chunk: '~s'", [Chunk]),
-    {noreply, State#state{response_body = <<RespBody/binary, Chunk/binary>>}, hibernate};
+    {noreply, State#state{response_body = <<RespBody/binary, Chunk/binary>>}};
 
 handle_info({ibrowse_async_response_end, ReqId}, #state{request_id=ReqId
                                                         ,response_body=RespBody
@@ -230,11 +230,14 @@ handle_info({ibrowse_async_response_end, ReqId}, #state{request_id=ReqId
                           ,response_content_type = <<>>
                           ,response_pid = Pid
                           ,response_ref = Ref
-                         }, hibernate};
+                         }
+     ,hibernate};
 
-handle_info({'DOWN', Ref, process, Pid, Reason}, #state{response_pid=Pid, response_ref=Ref}=State) ->
+handle_info({'DOWN', Ref, process, Pid, Reason}, #state{response_pid=Pid
+                                                        ,response_ref=Ref
+                                                       }=State) ->
     lager:debug("response pid ~p(~p) down: ~p", [Pid, Ref, Reason]),
-    {noreply, State#state{response_pid=undefined}};
+    {noreply, State#state{response_pid=undefined}, hibernate};
 
 handle_info(_Info, State) ->
     lager:debug("unhandled message: ~p", [_Info]),
@@ -249,7 +252,7 @@ handle_info(_Info, State) ->
 %%                                    ignore
 %% @end
 %%--------------------------------------------------------------------
--spec handle_event/2 :: (wh_json:json_object(), #state{}) -> gen_listener:handle_event_return().
+-spec handle_event/2 :: (wh_json:object(), #state{}) -> gen_listener:handle_event_return().
 handle_event(_JObj, #state{response_pid=Pid}) ->
     {reply, [{pid, Pid}]}.
 
@@ -281,7 +284,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
--spec send_req/4 :: (whapps_call:call(), nonempty_string() | ne_binary(), http_method(), wh_json:json_object()) ->
+-spec send_req/4 :: (whapps_call:call(), nonempty_string() | ne_binary(), http_method(), wh_json:object()) ->
                             'ok' |
                             {'ok', ibrowse_req_id()} |
                             {'stop', whapps_call:call()}.
