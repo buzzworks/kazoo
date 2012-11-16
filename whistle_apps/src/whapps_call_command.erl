@@ -1584,7 +1584,7 @@ wait_for_dtmf(Timeout) ->
                 { <<"call_event">>, <<"DTMF">> } ->
                     {ok, wh_json:get_value(<<"DTMF-Digit">>, JObj)};
                 _ ->
-                    wait_for_dtmf(decr_timeout(Timeout, Start)
+                    wait_for_dtmf(decr_timeout(Timeout, Start))
             end;
         _E ->
             lager:debug("unexpected ~p", [_E]),
