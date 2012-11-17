@@ -123,7 +123,6 @@
 %%--------------------------------------------------------------------
 -spec presence/2 :: (ne_binary(), ne_binary() | whapps_call:call()) -> 'ok'.
 -spec presence/3 :: (ne_binary(), ne_binary() | whapps_call:call(), api_binary() | whapps_call:call()) -> 'ok'.
-
 presence(State, PresenceId) when is_binary(PresenceId) ->
     presence(State, PresenceId, undefined);
 presence(State, Call) ->
