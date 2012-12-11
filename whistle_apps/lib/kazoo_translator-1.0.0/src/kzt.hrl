@@ -1,7 +1,6 @@
 -ifndef(KZT_HRL).
 
 -include_lib("whistle/include/wh_types.hrl").
--include_lib("xmerl/include/xmerl.hrl").
 
 -type ok_return() :: {'ok', whapps_call:call()}.
 -type stop_return() :: {'stop', whapps_call:call()}.
