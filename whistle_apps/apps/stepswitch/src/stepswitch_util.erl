@@ -20,7 +20,9 @@
 %% 
 %% @end
 %%--------------------------------------------------------------------
--spec lookup_number/1 :: (ne_binary()) -> {'ok', ne_binary(), proplist()} | {'error', term()}.
+-spec lookup_number/1 :: (ne_binary()) ->
+                                 {'ok', ne_binary(), wh_proplist()} |
+                                 {'error', term()}.
 lookup_number(Number) ->
     Num = wnm_util:normalize_number(Number),
     case wh_cache:fetch_local(?STEPSWITCH_CACHE, cache_key_number(Num)) of
@@ -28,7 +30,9 @@ lookup_number(Number) ->
         {error, not_found} -> fetch_number(Num)
     end.
 
--spec fetch_number/1 :: (ne_binary()) -> {'ok', ne_binary(), proplist()} | {'error', term()}.
+-spec fetch_number/1 :: (ne_binary()) ->
+                                {'ok', ne_binary(), wh_proplist()} |
+                                {'error', term()}.
 fetch_number(Num) ->
     case wh_number_manager:lookup_account_by_number(Num) of
         {ok, AccountId, Props} ->
@@ -41,7 +45,7 @@ fetch_number(Num) ->
             E
     end.
 
--spec maybe_transition_port_in/2 :: (ne_binary(), proplist()) -> false|pid().
+-spec maybe_transition_port_in/2 :: (ne_binary(), wh_proplist()) -> 'false' | pid().
 maybe_transition_port_in(Num, Props) ->
     case props:get_value(pending_port, Props) of
         false -> false;
