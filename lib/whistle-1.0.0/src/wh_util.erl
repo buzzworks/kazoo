@@ -119,7 +119,7 @@ change_console_log_level(L) ->
 
 -spec change_error_log_level/1 :: (log_level()) -> 'ok'.
 change_error_log_level(L) ->
-    lager:set_loglevel(lager_file_backend, L).
+    lager:set_loglevel({lager_file_backend, "log/error.log"}, L).
 
 -spec change_syslog_log_level/1 :: (log_level()) -> 'ok'.
 change_syslog_log_level(L) ->
@@ -133,7 +133,7 @@ change_syslog_log_level(L) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec format_account_id/1 :: ([binary(),...] | binary() | wh_json:object()) -> binary().
--spec format_account_id/2 :: ([binary(),...] | binary() | wh_json:object(), unencoded | encoded | raw) -> binary().
+-spec format_account_id/2 :: ([binary(),...] | binary() | wh_json:object(), 'unencoded' | 'encoded' | 'raw') -> binary().
 
 format_account_id(Doc) -> format_account_id(Doc, unencoded).
 
