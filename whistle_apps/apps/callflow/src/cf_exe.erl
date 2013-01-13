@@ -249,7 +249,9 @@ init([Call]) ->
 
     Flow = whapps_call:kvs_fetch(cf_flow, Call),
     Self = self(),
-    my_queue(Self),
+
+    get_my_queue(Self),
+
     Updaters = [fun(C) -> whapps_call:kvs_store(cf_exe_pid, Self, C) end
                 ,fun(C) -> whapps_call:call_id_helper(fun cf_exe:callid/2, C) end
                 ,fun(C) -> whapps_call:control_queue_helper(fun cf_exe:control_queue/2, C) end
@@ -258,11 +260,10 @@ init([Call]) ->
                 ,flow=Flow
                }}.
 
-my_queue() ->
-    my_queue(self()).
-my_queue(Srv) ->
+get_my_queue(Self) ->
     spawn(fun() ->
-                  gen_listener:cast(Srv, {controller_queue, queue_name(Srv)})
+                  ControllerQ = queue_name(Self),
+                  gen_listener:cast(Self, {controller_queue, ControllerQ})
           end).
 
 %%--------------------------------------------------------------------
@@ -387,7 +388,7 @@ handle_cast({add_event_listener, {M, F, A}}, #state{call=Call}=State) ->
     end;
 
 handle_cast({controller_queue, undefined}, State) ->
-    my_queue(),
+    _ = get_my_queue(self()),
     {noreply, State};
 handle_cast({controller_queue, ControllerQ}, #state{call=Call}=State) ->
     {noreply, launch_cf_module(State#state{call=whapps_call:set_controller_queue(ControllerQ, Call)})};
