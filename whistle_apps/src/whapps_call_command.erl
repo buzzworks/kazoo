@@ -299,12 +299,15 @@ audio_macro([{tts, Text, Voice, Lang}|T], Call, Queue) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec response/2 :: (ne_binary(), whapps_call:call()) -> {'ok', ne_binary()} |
-                                                         {'error', 'no_response'}.
--spec response/3 :: (ne_binary(), api_binary(), whapps_call:call()) -> {'ok', ne_binary()} |
-                                                                       {'error', 'no_response'}.
--spec response/4 :: (ne_binary(), 'undefined' | binary(), 'undefined' | binary(), whapps_call:call()) -> {'ok', ne_binary()} |
-                                                                                                         {'error', 'no_response'}.
+-spec response/2 :: (ne_binary(), whapps_call:call()) ->
+                            {'ok', ne_binary()} |
+                            {'error', 'no_response'}.
+-spec response/3 :: (ne_binary(), api_binary(), whapps_call:call()) ->
+                            {'ok', ne_binary()} |
+                            {'error', 'no_response'}.
+-spec response/4 :: (ne_binary(), api_binary(), api_binary(), whapps_call:call()) ->
+                            {'ok', ne_binary()} |
+                            {'error', 'no_response'}.
 
 response(Code, Call) ->
     response(Code, undefined, Call).
@@ -560,7 +563,7 @@ b_hangup(true, Call) ->
 -spec b_bridge/3 :: (wh_json:objects(), timeout_api_value(), whapps_call:call()) -> whapps_api_bridge_return().
 -spec b_bridge/4 :: (wh_json:objects(), timeout_api_value(), api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
 -spec b_bridge/5 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
--spec b_bridge/6 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), api_binary(), whapps_call:call()) 
+-spec b_bridge/6 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), api_binary(), whapps_call:call())
                     -> whapps_api_bridge_return().
 -spec b_bridge/7 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), api_binary(), wh_json:object() | 'undefined', whapps_call:call()) ->
                             whapps_api_bridge_return().
@@ -979,9 +982,9 @@ tones_command(Tones, Call) ->
 -spec b_prompt_and_collect_digit/2 :: (ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_prompt_and_collect_digits/4 :: (ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_prompt_and_collect_digits/5 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
--spec b_prompt_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) 
+-spec b_prompt_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call())
                                      -> b_play_and_collect_digits_return().
--spec b_prompt_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call()) 
+-spec b_prompt_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call())
                                      -> b_play_and_collect_digits_return().
 -spec b_prompt_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                       ,whapps_call:call()) -> b_play_and_collect_digits_return().
@@ -1048,9 +1051,9 @@ b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, Invali
 -spec b_play_and_collect_digit/2 :: (ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_play_and_collect_digits/4 :: (ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_play_and_collect_digits/5 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
--spec b_play_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) 
+-spec b_play_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call())
                                      -> b_play_and_collect_digits_return().
--spec b_play_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call()) 
+-spec b_play_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call())
                                      -> b_play_and_collect_digits_return().
 -spec b_play_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                       ,whapps_call:call()) -> b_play_and_collect_digits_return().
@@ -1257,7 +1260,7 @@ b_flush(Call) ->
 %%--------------------------------------------------------------------
 %% @public
 %% @doc
-%% 
+%%
 %% @end
 %%--------------------------------------------------------------------
 -spec privacy/1 ::  (whapps_call:call()) -> 'ok'.
@@ -1306,9 +1309,9 @@ b_privacy(Mode, Call) ->
 -type collect_digits_return() :: {'error','channel_hungup' | 'channel_unbridge' | wh_json:object()} | {'ok', ne_binary()}.
 -spec collect_digits/2 :: (integer() | ne_binary(), whapps_call:call()) -> collect_digits_return().
 -spec collect_digits/3 :: (integer() | ne_binary(), integer() | ne_binary(), whapps_call:call()) -> collect_digits_return().
--spec collect_digits/4 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), whapps_call:call()) 
+-spec collect_digits/4 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), whapps_call:call())
                           -> collect_digits_return().
--spec collect_digits/5 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), api_binary(), whapps_call:call()) 
+-spec collect_digits/5 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), api_binary(), whapps_call:call())
                           -> collect_digits_return().
 -spec collect_digits/6 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), api_binary(), list()
                            ,whapps_call:call()) -> collect_digits_return().
@@ -1568,7 +1571,11 @@ wait_for_headless_application(Application, Event, Type, Timeout) ->
 %% Wait for a DTMF event and extract the digits when it comes
 %% @end
 %%--------------------------------------------------------------------
--spec wait_for_dtmf/1 :: (wh_timeout()) -> {'error', 'channel_hungup' | wh_json:object()} | {'ok', binary()}.
+-type wait_for_dtmf_error() :: 'channel_hungup' | 'channel_destroy' |
+                               wh_json:object().
+-spec wait_for_dtmf/1 :: (wh_timeout()) ->
+                                 {'ok', binary()} |
+                                 {'error', wait_for_dtmf_error()}.
 wait_for_dtmf(Timeout) ->
     Start = erlang:now(),
     receive
@@ -1621,7 +1628,7 @@ wait_for_bridge(Timeout, Fun, Call) ->
                          true -> ok;
                          false -> fail
                      end,
-            case get_event_type(JObj) of               
+            case get_event_type(JObj) of
                 {<<"error">>, _, <<"bridge">>} ->
                     lager:debug("channel execution error while waiting for bridge: ~s", [wh_json:encode(JObj)]),
                     {error, JObj};
@@ -1864,7 +1871,7 @@ get_event_type(JObj) ->
 send_command(Command, Call) when is_list(Command) ->
     true = whapps_call:is_call(Call),
     CustomPublisher = whapps_call:custom_publish_function(Call),
-    CtrlQ = whapps_call:control_queue(Call),    
+    CtrlQ = whapps_call:control_queue(Call),
     case is_function(CustomPublisher, 2) of
         true -> CustomPublisher(Command, Call);
         false when is_binary(CtrlQ) ->
