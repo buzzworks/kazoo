@@ -17,18 +17,19 @@
 %% played as part of the error.
 %% @end
 %%--------------------------------------------------------------------
--spec send/3 :: (ne_binary(), ne_binary(), 'undefined' | ne_binary()) -> {'ok', ne_binary()} |
-                                                                         {'error', 'no_response'}.
--spec send/4 :: (ne_binary(), ne_binary(), 'undefined' | ne_binary(), 'undefined' | binary()) ->  {'ok', ne_binary()} |
-                                                                                                  {'error', 'no_response'}.
--spec send/5 :: (ne_binary(), ne_binary(), 'undefined' | ne_binary(), 'undefined' | binary(), 'undefined' | binary()) ->  {'ok', ne_binary()} |
-                                                                                                                          {'error', 'no_response'}.
+-spec send/3 :: (ne_binary(), ne_binary(), api_binary()) ->
+                        {'ok', ne_binary()} |
+                        {'error', 'no_response'}.
+-spec send/4 :: (ne_binary(), ne_binary(), api_binary(), api_binary()) ->
+                        {'ok', ne_binary()} |
+                        {'error', 'no_response'}.
+-spec send/5 :: (ne_binary(), ne_binary(), api_binary(), api_binary(), api_binary()) ->
+                        {'ok', ne_binary()} |
+                        {'error', 'no_response'}.
 
 send(CallId, CtrlQ, Code) ->
-    send(CallId, CtrlQ, Code, <<>>).
+    send(CallId, CtrlQ, Code, undefined).
 
-send(CallId, CtrlQ, Code, undefined) ->
-    send(CallId, CtrlQ, Code, <<>>);
 send(CallId, CtrlQ, Code, Cause) ->
     send(CallId, CtrlQ, Code, Cause, undefined).
 
@@ -107,7 +108,9 @@ do_send(CallId, CtrlQ, Commands) ->
 %%
 %% @end
 %%--------------------------------------------------------------------
--spec send_default/3 :: (ne_binary(), ne_binary(), 'undefined' | ne_binary()) -> {'ok', ne_binary()} | {'error', 'no_response'}.
+-spec send_default/3 :: (ne_binary(), ne_binary(), api_binary()) ->
+                                {'ok', ne_binary()} |
+                                {'error', 'no_response'}.
 send_default(_, _, undefined) ->
     {error, no_response};    
 send_default(CallId, CtrlQ, Cause) ->
@@ -124,7 +127,7 @@ send_default(CallId, CtrlQ, Cause) ->
 %% returns the configured response proplist
 %% @end
 %%--------------------------------------------------------------------
--spec get_response/1 :: (ne_binary()) -> 'undefined' | proplist().
+-spec get_response/1 :: (ne_binary()) -> 'undefined' | wh_proplist().
 get_response(Cause) ->
     case default_response(Cause) of
         undefined -> whapps_config:get(?CALL_RESPONSE_CONF, Cause);
@@ -137,9 +140,36 @@ get_response(Cause) ->
 %% returns the default action given the error
 %% @end
 %%--------------------------------------------------------------------
--spec default_response/1 :: (ne_binary()) -> 'undefined' | proplist().
-default_response(<<"UNSPECIFIED">>) ->
-    undefined;
+-spec default_response/1 :: (ne_binary()) -> 'undefined' | wh_proplist().
+default_response(<<"UNSPECIFIED">>) -> undefined;
+default_response(<<"CHANNEL_UNACCEPTABLE">>) -> undefined;
+default_response(<<"CALL_AWARDED_DELIVERED">>) -> undefined;
+default_response(<<"RESPONSE_TO_STATUS_ENQUIRY">>) -> undefined;
+default_response(<<"PICKED_OFF">>) -> undefined;
+default_response(<<"USER_NOT_REGISTERED">>) -> undefined;
+default_response(<<"CRASH">>) -> undefined;
+default_response(<<"SYSTEM_SHUTDOWN">>) -> undefined;
+default_response(<<"LOSE_RACE">>) -> undefined;
+default_response(<<"MANAGER_REQUEST">>) -> undefined;
+default_response(<<"BLIND_TRANSFER">>) -> undefined;
+default_response(<<"ATTENDED_TRANSFER">>) -> undefined;
+default_response(<<"ALLOTTED_TIMEOUT">>) -> undefined;
+default_response(<<"USER_CHALLENGE">>) -> undefined;
+default_response(<<"PROTOCOL_ERROR">>) -> undefined;
+default_response(<<"INTERWORKING">>) -> undefined;
+default_response(<<"ACCESS_INFO_DISCARDED">>) -> undefined;
+default_response(<<"MESSAGE_TYPE_NONEXIST">>) -> undefined;
+default_response(<<"WRONG_MESSAGE">>) -> undefined;
+default_response(<<"IE_NONEXIST">>) -> undefined;
+default_response(<<"INVALID_IE_CONTENTS">>) -> undefined;
+default_response(<<"WRONG_CALL_STATE">>) -> undefined;
+default_response(<<"PRE_EMPTED">>) -> undefined;
+default_response(<<"FACILITY_NOT_SUBSCRIBED">>) -> undefined;
+default_response(<<"INVALID_MSG_UNSPECIFIED">>) -> undefined;
+default_response(<<"SERVICE_UNAVAILABLE">>) -> undefined;
+default_response(<<"CHAN_NOT_IMPLEMENTED">>) -> undefined;
+default_response(<<"INVALID_CALL_REFERENCE">>) -> undefined;
+
 default_response(<<"UNALLOCATED_NUMBER">>) ->
     [{<<"Code">>, <<"404">>}
      ,{<<"Message">>, <<"No route to destination">>}
@@ -154,10 +184,6 @@ default_response(<<"NO_ROUTE_DESTINATION">>) ->
      ,{<<"Message">>, <<"No route to destination">>}
      ,{<<"Media">>, <<"/system_media/fault-can_not_be_completed_as_dialed">>}
     ];
-default_response(<<"CHANNEL_UNACCEPTABLE">>) ->
-    undefined;
-default_response(<<"CALL_AWARDED_DELIVERED">>) ->
-    undefined;
 default_response(<<"NORMAL_CLEARING">>) ->
     [{<<"Media">>, <<"tone_stream://%(500,500,480,620);loops=25">>}];
 default_response(<<"USER_BUSY">>) ->
@@ -210,8 +236,6 @@ default_response(<<"FACILITY_REJECTED">>) ->
     [{<<"Code">>, <<"510">>}
      ,{<<"Message">>, <<"Facility rejected">>}
     ];
-default_response(<<"RESPONSE_TO_STATUS_ENQUIRY">>) ->
-    undefined;
 default_response(<<"NORMAL_UNSPECIFIED">>) ->
     [{<<"Code">>, <<"480">>}
      ,{<<"Message">>, <<"Normal unspecified">>}
@@ -233,16 +257,10 @@ default_response(<<"SWITCH_CONGESTION">>) ->
     [{<<"Code">>, <<"503">>}
      ,{<<"Message">>, <<"Switch congestion">>}
     ];
-default_response(<<"ACCESS_INFO_DISCARDED">>) ->
-    undefined;
 default_response(<<"REQUESTED_CHAN_UNAVAIL">>) ->
     [{<<"Code">>, <<"503">>}
      ,{<<"Message">>, <<"Requested channel unavailable">>}
     ];
-default_response(<<"PRE_EMPTED">>) ->
-    undefined;
-default_response(<<"FACILITY_NOT_SUBSCRIBED">>) ->
-    undefined;
 default_response(<<"OUTGOING_CALL_BARRED">>) ->
     [{<<"Code">>, <<"403">>}
      ,{<<"Message">>, <<"Outgoing call barred">>}
@@ -259,14 +277,10 @@ default_response(<<"BEARERCAPABILITY_NOTAVAIL">>) ->
     [{<<"Code">>, <<"403">>}
      ,{<<"Message">>, <<"Bearer capability not presently available">>}
     ];
-default_response(<<"SERVICE_UNAVAILABLE">>) ->
-    undefined;
 default_response(<<"BEARERCAPABILITY_NOTIMPL">>) ->
     [{<<"Code">>, <<"488">>}
      ,{<<"Message">>, <<"Bearer capability not implemented">>}
     ];
-default_response(<<"CHAN_NOT_IMPLEMENTED">>) ->
-    undefined;
 default_response(<<"FACILITY_NOT_IMPLEMENTED">>) ->
     [{<<"Code">>, <<"501">>}
      ,{<<"Message">>, <<"Facility not implemented">>}
@@ -276,30 +290,16 @@ default_response(<<"SERVICE_NOT_IMPLEMENTED">>) ->
      ,{<<"Message">>, <<"Service not implemented">>}
      ,{<<"Media">>, <<"/system_media/fault-facility_trouble">>}
     ];
-default_response(<<"INVALID_CALL_REFERENCE">>) ->
-    undefined;
 default_response(<<"INCOMPATIBLE_DESTINATION">>) ->
     [{<<"Code">>, <<"488">>}
      ,{<<"Message">>, <<"Incompatible destination">>}
      ,{<<"Media">>, <<"/system_media/fault-facility_trouble">>}
     ];
-default_response(<<"INVALID_MSG_UNSPECIFIED">>) ->
-    undefined;
 default_response(<<"MANDATORY_IE_MISSING">>) ->
     [{<<"Code">>, <<"400">>}
      ,{<<"Message">>, <<"Mandatory informatin missing">>}
      ,{<<"Media">>, <<"/system_media/fault-facility_trouble">>}
     ];
-default_response(<<"MESSAGE_TYPE_NONEXIST">>) ->
-    undefined;
-default_response(<<"WRONG_MESSAGE">>) ->
-    undefined;
-default_response(<<"IE_NONEXIST">>) ->
-    undefined;
-default_response(<<"INVALID_IE_CONTENTS">>) ->
-    undefined;
-default_response(<<"WRONG_CALL_STATE">>) ->
-    undefined;
 default_response(<<"RECOVERY_ON_TIMER_EXPIRE">>) ->
     [{<<"Code">>, <<"504">>}
      ,{<<"Message">>, <<"Recovery on timer expire">>}
@@ -310,39 +310,15 @@ default_response(<<"MANDATORY_IE_LENGTH_ERROR">>) ->
      ,{<<"Message">>, <<"Mandatory informatin missing">>}
      ,{<<"Media">>, <<"/system_media/fault-facility_trouble">>}
     ];
-default_response(<<"PROTOCOL_ERROR">>) ->
-    undefined;
-default_response(<<"INTERWORKING">>) ->
-    undefined;
 default_response(<<"ORIGINATOR_CANCEL">>) ->
     [{<<"Code">>, <<"487">>}
      ,{<<"Message">>, <<"Originator cancel">>}
     ];
-default_response(<<"CRASH">>) ->
-    undefined;
-default_response(<<"SYSTEM_SHUTDOWN">>) ->
-    undefined;
-default_response(<<"LOSE_RACE">>) ->
-    undefined;
-default_response(<<"MANAGER_REQUEST">>) ->
-    undefined;
-default_response(<<"BLIND_TRANSFER">>) ->
-    undefined;
-default_response(<<"ATTENDED_TRANSFER">>) ->
-    undefined;
-default_response(<<"ALLOTTED_TIMEOUT">>) ->
-    undefined;
-default_response(<<"USER_CHALLENGE">>) ->
-    undefined;
 default_response(<<"MEDIA_TIMEOUT">>) ->
     [{<<"Code">>, <<"504">>}
      ,{<<"Message">>, <<"Media timeout">>}
      ,{<<"Media">>, <<"tone_stream://%(250,250,480,620);loops=25">>}
     ];
-default_response(<<"PICKED_OFF">>) ->
-    undefined;
-default_response(<<"USER_NOT_REGISTERED">>) ->
-    undefined;
 default_response(<<"PROGRESS_TIMEOUT">>) ->
     [{<<"Code">>, <<"486">>}
      ,{<<"Message">>, <<"Progress timeout">>}
