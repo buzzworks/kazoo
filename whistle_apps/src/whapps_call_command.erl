@@ -550,20 +550,20 @@ b_hangup(true, Call) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec bridge/2 :: (wh_json:objects(), whapps_call:call()) -> 'ok'.
--spec bridge/3 :: (wh_json:objects(), whapps_api_binary(), whapps_call:call()) -> 'ok'.
--spec bridge/4 :: (wh_json:objects(), whapps_api_binary(), whapps_api_binary(), whapps_call:call()) -> 'ok'.
--spec bridge/5 :: (wh_json:objects(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), whapps_call:call()) -> 'ok'.
--spec bridge/6 :: (wh_json:objects(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), whapps_call:call()) -> 'ok'.
--spec bridge/7 :: (wh_json:objects(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), wh_json:object() | 'undefined', whapps_call:call()) -> 'ok'.
+-spec bridge/3 :: (wh_json:objects(), timeout_api_value(), whapps_call:call()) -> 'ok'.
+-spec bridge/4 :: (wh_json:objects(), timeout_api_value(), api_binary(), whapps_call:call()) -> 'ok'.
+-spec bridge/5 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), whapps_call:call()) -> 'ok'.
+-spec bridge/6 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), api_binary(), whapps_call:call()) -> 'ok'.
+-spec bridge/7 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), api_binary(), wh_json:object() | 'undefined', whapps_call:call()) -> 'ok'.
 
 -spec b_bridge/2 :: (wh_json:objects(), whapps_call:call()) -> whapps_api_bridge_return().
--spec b_bridge/3 :: (wh_json:objects(), whapps_api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
--spec b_bridge/4 :: (wh_json:objects(), whapps_api_binary(), whapps_api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
--spec b_bridge/5 :: (wh_json:objects(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
--spec b_bridge/6 :: (wh_json:objects(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), whapps_call:call()) 
+-spec b_bridge/3 :: (wh_json:objects(), timeout_api_value(), whapps_call:call()) -> whapps_api_bridge_return().
+-spec b_bridge/4 :: (wh_json:objects(), timeout_api_value(), api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
+-spec b_bridge/5 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
+-spec b_bridge/6 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), api_binary(), whapps_call:call()) 
                     -> whapps_api_bridge_return().
--spec b_bridge/7 :: (wh_json:objects(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), whapps_api_binary(), wh_json:object() | 'undefined', whapps_call:call())
-                    -> whapps_api_bridge_return().
+-spec b_bridge/7 :: (wh_json:objects(), timeout_api_value(), api_binary(), api_binary(), api_binary(), wh_json:object() | 'undefined', whapps_call:call()) ->
+                            whapps_api_bridge_return().
 
 bridge(Endpoints, Call) ->
     bridge(Endpoints, ?DEFAULT_TIMEOUT, Call).
@@ -797,15 +797,15 @@ b_tts(SayMe, Voice, Lang, Terminators, Engine, Call) -> wait_for_noop(tts(SayMe,
 %%--------------------------------------------------------------------
 -spec record/2 :: (ne_binary(), whapps_call:call()) -> 'ok'.
 -spec record/3 :: (ne_binary(), [binary(),...], whapps_call:call()) -> 'ok'.
--spec record/4 :: (ne_binary(), [binary(),...],  whapps_api_binary() | integer(), whapps_call:call()) -> 'ok'.
--spec record/5 :: (ne_binary(), [binary(),...],  whapps_api_binary() | integer(), whapps_api_binary() | integer(), whapps_call:call()) -> 'ok'.
--spec record/6 :: (ne_binary(), [binary(),...],  whapps_api_binary() | integer(), whapps_api_binary() | integer(),  whapps_api_binary() | integer(), whapps_call:call()) -> 'ok'.
+-spec record/4 :: (ne_binary(), [binary(),...],  api_binary() | integer(), whapps_call:call()) -> 'ok'.
+-spec record/5 :: (ne_binary(), [binary(),...],  api_binary() | integer(), api_binary() | integer(), whapps_call:call()) -> 'ok'.
+-spec record/6 :: (ne_binary(), [binary(),...],  api_binary() | integer(), api_binary() | integer(),  api_binary() | integer(), whapps_call:call()) -> 'ok'.
 
 -spec b_record/2 :: (ne_binary(), whapps_call:call()) -> whapps_api_std_return().
 -spec b_record/3 :: (ne_binary(), [binary(),...], whapps_call:call()) -> whapps_api_std_return().
--spec b_record/4 :: (ne_binary(), [binary(),...], whapps_api_binary() | integer(), whapps_call:call()) -> whapps_api_std_return().
--spec b_record/5 :: (ne_binary(), [binary(),...], whapps_api_binary() | integer(), whapps_api_binary() | integer(), whapps_call:call()) -> whapps_api_std_return().
--spec b_record/6 :: (ne_binary(), [binary(),...], whapps_api_binary() | integer(), whapps_api_binary() | integer(), whapps_api_binary() | integer(), whapps_call:call()) -> whapps_api_std_return().
+-spec b_record/4 :: (ne_binary(), [binary(),...], api_binary() | integer(), whapps_call:call()) -> whapps_api_std_return().
+-spec b_record/5 :: (ne_binary(), [binary(),...], api_binary() | integer(), api_binary() | integer(), whapps_call:call()) -> whapps_api_std_return().
+-spec b_record/6 :: (ne_binary(), [binary(),...], api_binary() | integer(), api_binary() | integer(), api_binary() | integer(), whapps_call:call()) -> whapps_api_std_return().
 
 record(MediaName, Call) ->
     record(MediaName, ?ANY_DIGIT, Call).
@@ -839,8 +839,8 @@ b_record(MediaName, Terminators, TimeLimit, SilenceThreshold, SilenceHits, Call)
 
 -spec record_call/2 :: (ne_binary(), whapps_call:call()) -> 'ok'.
 -spec record_call/3 :: (ne_binary(), ne_binary(), whapps_call:call()) -> 'ok'.
--spec record_call/4 :: (ne_binary(), ne_binary(),  whapps_api_binary() | pos_integer(), whapps_call:call()) -> 'ok'.
--spec record_call/5 :: (ne_binary(), ne_binary(),  whapps_api_binary() | pos_integer(), list(), whapps_call:call()) -> 'ok'.
+-spec record_call/4 :: (ne_binary(), ne_binary(),  api_binary() | pos_integer(), whapps_call:call()) -> 'ok'.
+-spec record_call/5 :: (ne_binary(), ne_binary(),  api_binary() | pos_integer(), list(), whapps_call:call()) -> 'ok'.
 record_call(MediaName, Call) ->
     record_call(MediaName, <<"start">>, Call).
 record_call(MediaName, Action, Call) ->
@@ -861,9 +861,9 @@ record_call(MediaName, Action, TimeLimit, Terminators, Call) ->
                                  wait_for_headless_application_return().
 -spec b_record_call/3 :: (ne_binary(), ne_binary(), whapps_call:call()) ->
                                  wait_for_headless_application_return().
--spec b_record_call/4 :: (ne_binary(), ne_binary(), whapps_api_binary() | pos_integer(), whapps_call:call()) ->
+-spec b_record_call/4 :: (ne_binary(), ne_binary(), api_binary() | pos_integer(), whapps_call:call()) ->
                                  wait_for_headless_application_return().
--spec b_record_call/5 :: (ne_binary(), ne_binary(), whapps_api_binary() | pos_integer(), list(), whapps_call:call()) ->
+-spec b_record_call/5 :: (ne_binary(), ne_binary(), api_binary() | pos_integer(), list(), whapps_call:call()) ->
                                  wait_for_headless_application_return().
 b_record_call(MediaName, Call) ->
     record_call(MediaName, Call),
@@ -885,9 +885,9 @@ b_record_call(MediaName, Action, TimeLimit, Terminators, Call) ->
 %%--------------------------------------------------------------------
 -type b_store_return() :: {'error', 'timeout' | wh_json:object()} | {'ok', wh_json:object()}.
 
--spec store/3 :: (ne_binary(), whapps_api_binary(), whapps_call:call()) -> 'ok'.
--spec store/4 :: (ne_binary(), whapps_api_binary(), whapps_api_binary(), whapps_call:call()) -> 'ok'.
--spec store/5 :: (ne_binary(), whapps_api_binary(), whapps_api_binary(), wh_json:objects(), whapps_call:call()) -> 'ok'.
+-spec store/3 :: (ne_binary(), api_binary(), whapps_call:call()) -> 'ok'.
+-spec store/4 :: (ne_binary(), api_binary(), api_binary(), whapps_call:call()) -> 'ok'.
+-spec store/5 :: (ne_binary(), api_binary(), api_binary(), wh_json:objects(), whapps_call:call()) -> 'ok'.
 
 -spec b_store/3 :: (ne_binary(), ne_binary(), whapps_call:call()) -> b_store_return().
 -spec b_store/4 :: (ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_store_return().
@@ -969,10 +969,10 @@ tones_command(Tones, Call) ->
 -spec prompt_and_collect_digits/4 :: (ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> 'ok'.
 -spec prompt_and_collect_digits/5 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> 'ok'.
 -spec prompt_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> 'ok'.
--spec prompt_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), whapps_call:call()) -> 'ok'.
--spec prompt_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), ne_binary()
+-spec prompt_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call()) -> 'ok'.
+-spec prompt_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                     ,whapps_call:call()) -> ok.
--spec prompt_and_collect_digits/9 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), ne_binary()
+-spec prompt_and_collect_digits/9 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                     ,ne_binaries(), whapps_call:call()) -> 'ok'.
 
 
@@ -981,11 +981,11 @@ tones_command(Tones, Call) ->
 -spec b_prompt_and_collect_digits/5 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_prompt_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) 
                                      -> b_play_and_collect_digits_return().
--spec b_prompt_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), whapps_call:call()) 
+-spec b_prompt_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call()) 
                                      -> b_play_and_collect_digits_return().
--spec b_prompt_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), ne_binary()
+-spec b_prompt_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                       ,whapps_call:call()) -> b_play_and_collect_digits_return().
--spec b_prompt_and_collect_digits/9 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), ne_binary()
+-spec b_prompt_and_collect_digits/9 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                       ,ne_binaries(), whapps_call:call()) -> b_play_and_collect_digits_return().
 
 prompt_and_collect_digit(Prompt, Call) ->
@@ -1038,10 +1038,10 @@ b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, Invali
 -spec play_and_collect_digits/4 :: (ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> 'ok'.
 -spec play_and_collect_digits/5 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> 'ok'.
 -spec play_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> 'ok'.
--spec play_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), whapps_call:call()) -> 'ok'.
--spec play_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), ne_binary()
+-spec play_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call()) -> 'ok'.
+-spec play_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                     ,whapps_call:call()) -> 'ok'.
--spec play_and_collect_digits/9 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), ne_binary()
+-spec play_and_collect_digits/9 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                     ,ne_binaries(), whapps_call:call()) -> 'ok'.
 
 
@@ -1050,11 +1050,11 @@ b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, Invali
 -spec b_play_and_collect_digits/5 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_play_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) 
                                      -> b_play_and_collect_digits_return().
--spec b_play_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), whapps_call:call()) 
+-spec b_play_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call()) 
                                      -> b_play_and_collect_digits_return().
--spec b_play_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), ne_binary()
+-spec b_play_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                       ,whapps_call:call()) -> b_play_and_collect_digits_return().
--spec b_play_and_collect_digits/9 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_api_binary(), ne_binary()
+-spec b_play_and_collect_digits/9 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                       ,ne_binaries(), whapps_call:call()) -> b_play_and_collect_digits_return().
 
 play_and_collect_digit(Media, Call) ->

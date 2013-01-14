@@ -26,4 +26,4 @@
                                     } |
                                     {'fail', wh_json:object()} |
                                     {'ok', wh_json:object()}.
--type whapps_api_binary() :: 'undefined' | binary().
+-type timeout_api_value() :: api_binary() | non_neg_integer().
