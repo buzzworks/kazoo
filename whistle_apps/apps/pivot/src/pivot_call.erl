@@ -230,7 +230,7 @@ handle_info({ibrowse_async_response_end, ReqId}, #state{request_id=ReqId
                                                         ,call=Call
                                                        }=State) ->
     Self = self(),
-    
+
     {Pid, Ref} = spawn_monitor(?MODULE, handle_resp, [kzt_util:set_amqp_listener(Self, Call)
                                                       ,CT
                                                       ,RespBody
@@ -313,7 +313,7 @@ send_req(Call, Uri, post, BaseParams) when is_list(BaseParams) ->
 
     send(Call, Uri, post, [{"Content-Type", "application/x-www-form-urlencoded"}], wh_json:to_querystring(Params)).
 
--spec send/5 :: (whapps_call:call(), iolist(), atom(), wh_proplist(), iolist()) -> 
+-spec send/5 :: (whapps_call:call(), iolist(), atom(), wh_proplist(), iolist()) ->
                         'ok' |
                         {'ok', ibrowse_req_id()} |
                         {'stop', whapps_call:call()}.
@@ -404,7 +404,7 @@ uri(URI, QueryString) ->
 -spec req_params/2 :: (ne_binary(), whapps_call:call()) -> wh_proplist().
 req_params(Format, Call) ->
     FmtBin = <<"kzt_", Format/binary>>,
-    try 
+    try
         FmtAtom = wh_util:to_atom(FmtBin),
         lager:debug("get req params from ~s", [FmtBin]),
         FmtAtom:req_params(Call)
