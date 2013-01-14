@@ -6,8 +6,7 @@ DIRS =  . \
 	$(ROOT)/lib/whistle-1.0.0 \
 	$(ROOT)/lib/whistle_amqp-1.0.0 \
 	../whistle_couch-1.0.0 \
-	../whistle_number_manager-1.0.0 \
-	../whistle_apps
+	../..
 
 all: app
 
