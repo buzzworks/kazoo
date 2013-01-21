@@ -250,7 +250,7 @@ channel_resume(UUID, NewNode, Evt) ->
                                      ,[{"profile_name", wh_util:to_list(?DEFAULT_FS_PROFILE)}
                                        ,{"channel_id", wh_util:to_list(UUID)}
                                        ,{"metadata", wh_util:to_list(Meta)}
-                                       ,{"technology", wh_util:to_list(props:get_value(<<"technology">>, Evt))}
+                                       ,{"technology", wh_util:to_list(props:get_value(<<"technology">>, Evt, <<"sofia">>))}
                                       ]) of
         ok ->
             lager:debug("sent channel_move::move_request with metadata to ~s for ~s", [NewNode, UUID]),
@@ -300,8 +300,9 @@ channel_teardown_sbd(UUID, OriginalNode) ->
     case freeswitch:sendevent_custom(OriginalNode, 'channel_move::move_request'
                                      ,[{"profile_name", wh_util:to_list(?DEFAULT_FS_PROFILE)}
                                        ,{"channel_id", wh_util:to_list(UUID)}
-                                       ,{"technology", "sofia"}
-                                      ]) of
+                                       ,{"technology", ?DEFAULT_FS_TECHNOLOGY}
+                                      ])
+    of
         ok ->
             lager:debug("sent channel_move::move_request to ~s for ~s", [OriginalNode, UUID]),
             true;
