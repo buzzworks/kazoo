@@ -184,15 +184,17 @@ handle_config_req(Node, ID, <<"sofia.conf">>) ->
                                         ,wh_json:from_list(default_sip_profiles())),
     try ecallmgr_fs_xml:sip_profiles_xml(DefaultProfiles) of 
         {ok, ConfigXml} ->        
-            lager:debug("sending XML to ~s: ~s", [Node, ConfigXml]),
+            lager:debug("sending sofia XML to ~s: ~s", [Node, ConfigXml]),
             freeswitch:fetch_reply(Node, ID, erlang:iolist_to_binary(ConfigXml))
     catch
         _E:_R ->
-            lager:info("acl resp failed to convert to XML (~s): ~p", [_E, _R]),
+            lager:info("sofia resp failed to convert to XML (~s): ~p", [_E, _R]),
             {ok, Resp} = ecallmgr_fs_xml:empty_response(),
             freeswitch:fetch_reply(Node, ID, Resp)
     end;
-handle_config_req(Node, ID, _) ->
+handle_config_req(Node, ID, _Conf) ->
+    put(callid, ID),
+    lager:debug("not configuring ~s via kazoo", [_Conf]),
     {ok, Resp} = ecallmgr_fs_xml:empty_response(),
     freeswitch:fetch_reply(Node, ID, Resp).
 
