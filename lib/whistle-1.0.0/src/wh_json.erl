@@ -220,7 +220,7 @@ encode_kv(Prefix, K, [V|Vs], Sep, Acc) ->
     encode_kv(Prefix, K, Vs, Sep, [ <<"&">>, encode_kv(Prefix, K, Sep, mochiweb_util:quote_plus(V)) | Acc]);
 encode_kv(_, _, [], _, Acc) -> lists:reverse(Acc).
 
--spec get_json_value/2 :: (json_string() | json_strings(), object()) -> 'undefined' | object().
+-spec get_json_value/2 :: (json_string() | json_strings(), object()) -> api_object().
 -spec get_json_value/3 :: (json_string() | json_strings(), object(), Default) -> Default | object().
 get_json_value(Key, JObj) ->
     get_json_value(Key, JObj, undefined).
@@ -264,7 +264,7 @@ get_string_value(Key, JObj, Default) ->
         Value -> wh_util:to_list(Value)
     end.
 
--spec get_binary_value/2 :: (json_string() | json_strings(), object() | objects()) -> 'undefined' | binary().
+-spec get_binary_value/2 :: (json_string() | json_strings(), object() | objects()) -> api_binary().
 -spec get_binary_value/3 :: (json_string() | json_strings(), object() | objects(), Default) -> binary() | Default.
 get_binary_value(Key, JObj) ->
     get_binary_value(Key, JObj, undefined).
@@ -275,7 +275,7 @@ get_binary_value(Key, JObj, Default) ->
     end.
 
 %% must be an existing atom
--spec get_atom_value/2 :: (json_string() | json_strings(), object() | objects()) -> 'undefined' | atom().
+-spec get_atom_value/2 :: (json_string() | json_strings(), object() | objects()) -> atom().
 -spec get_atom_value/3 :: (json_string() | json_strings(), object() | objects(), Default) -> atom() | Default.
 get_atom_value(Key, JObj) ->
     get_atom_value(Key, JObj, undefined).
@@ -285,7 +285,7 @@ get_atom_value(Key, JObj, Default) ->
         Value -> wh_util:to_atom(Value)
     end.
 
--spec get_integer_value/2 :: (json_string() | json_strings(), object() | objects()) -> 'undefined' | integer().
+-spec get_integer_value/2 :: (json_string() | json_strings(), object() | objects()) -> api_integer().
 get_integer_value(Key, JObj) ->
     case get_value(Key, JObj) of
         undefined -> undefined;
@@ -299,7 +299,7 @@ get_integer_value(Key, JObj, Default) ->
         Value -> wh_util:to_integer(Value)
     end.
 
--spec get_number_value/2 :: (json_string() | json_strings(), object() | objects()) -> 'undefined' | number().
+-spec get_number_value/2 :: (json_string() | json_strings(), object() | objects()) -> api_number().
 get_number_value(Key, JObj) ->
     case get_value(Key, JObj) of
         undefined -> undefined;
@@ -313,7 +313,7 @@ get_number_value(Key, JObj, Default) when is_number(Default) ->
         Value -> wh_util:to_number(Value)
     end.
 
--spec get_float_value/2 :: (json_string() | json_strings(), object() | objects()) -> 'undefined' | float().
+-spec get_float_value/2 :: (json_string() | json_strings(), object() | objects()) -> api_float().
 get_float_value(Key, JObj) ->
     case get_value(Key, JObj) of
         undefined -> undefined;
