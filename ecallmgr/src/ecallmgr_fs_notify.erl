@@ -477,7 +477,8 @@ relay_presence(EventName, PresenceId, Props, Node, undefined) ->
                |[{wh_util:to_list(K), wh_util:to_list(V)}
                  || {K, V} <- lists:foldr(fun(Header, Prop) ->
                                                   proplists:delete(Header, Prop)
-                                          end, Props, ?FS_DEFAULT_HDRS)
+                                          end, Props, ?FS_DEFAULT_HDRS),
+                    not is_tuple(V)
                 ]
               ],
     [begin
@@ -494,7 +495,8 @@ relay_presence(EventName, _, Props, Node, Switch) ->
                |[{wh_util:to_list(K), wh_util:to_list(V)}
                  || {K, V} <- lists:foldr(fun(Header, Prop) ->
                                                   proplists:delete(Header, Prop)
-                                          end, Props, ?FS_DEFAULT_HDRS)
+                                          end, Props, ?FS_DEFAULT_HDRS),
+                    not is_tuple(V)
                 ]
               ],
     freeswitch:sendevent(wh_util:to_atom(Switch, true), EventName, Headers).
