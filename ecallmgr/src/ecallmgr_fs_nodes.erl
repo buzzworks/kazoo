@@ -73,6 +73,8 @@
                ,cookie :: atom()
                ,options = [] :: wh_proplist()
               }).
+-type fs_node() :: #node{}.
+-type fs_nodes() :: [fs_node(),...] | [].
 
 -record(astats, {billing_ids=sets:new() :: set()
                  ,outbound_flat_rate=sets:new() :: set()
@@ -82,7 +84,7 @@
                  ,resource_consumers=sets:new() :: set()
                 }).
 
--record(state, {nodes = [] :: [#node{},...] | []
+-record(state, {nodes = [] :: fs_nodes()
                 ,preconfigured_lookup :: pid()
                }).
 
@@ -868,7 +870,7 @@ bind_to_fs_events(_Else, Node) ->
     ok.
 
 -spec unbind_from_fs_events/1 :: (atom()) -> 'ok'.
-unbind_from_fs_events(Node) ->
+unbind_from_fs_events(_Node) ->
     ok.
 
 -spec update_stats/2 :: (connect|disconnect, atom()) -> 'ok'.
