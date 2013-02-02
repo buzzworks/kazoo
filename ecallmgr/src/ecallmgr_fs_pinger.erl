@@ -148,7 +148,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
--spec is_node_up/2 :: (atom(), wh_proplist()) -> boolean().
+-spec is_node_up(atom(), wh_proplist()) -> boolean().
 is_node_up(Node, Opts) ->
     case props:get_value(cookie, Opts) of
         undefined -> ok;

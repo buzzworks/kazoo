@@ -34,17 +34,17 @@
 %% Starts the supervisor
 %% @end
 %%--------------------------------------------------------------------
--spec start_link/0 :: () -> startlink_ret().
+-spec start_link() -> startlink_ret().
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
--spec add_node/2 :: (atom(), wh_proplist()) -> {'error', term()} | 
+-spec add_node(atom(), wh_proplist()) -> {'error', term()} | 
                                                {'ok','undefined' | pid()} | 
                                                {'ok','undefined' | pid(), term()}.
 add_node(Node, Options) ->
     supervisor:start_child(?SERVER, ?NODE(Node, [Node, Options])).
 
--spec remove_node/1 :: (atom()) -> 'ok' | {'error', 'running' | 'not_found' | 'simple_one_for_one'}.
+-spec remove_node(atom()) -> 'ok' | {'error', 'running' | 'not_found' | 'simple_one_for_one'}.
 remove_node(Node) ->
     _ = supervisor:terminate_child(?SERVER, Node),
     supervisor:delete_child(?SERVER, Node).

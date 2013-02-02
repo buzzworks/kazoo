@@ -35,17 +35,17 @@
 %% Starts the supervisor
 %% @end
 %%--------------------------------------------------------------------
--spec start_link/0 :: () -> startlink_ret().
+-spec start_link() -> startlink_ret().
 start_link() ->
     supervisor:start_link({local, ?SERVER}, ?MODULE, []).
 
--spec add_node/2 :: (atom(), proplist()) -> {'error', term()} | 
+-spec add_node(atom(), proplist()) -> {'error', term()} | 
                                             {'ok','undefined' | pid()} | 
                                             {'ok','undefined' | pid(), term()}.
 add_node(Node, Options) ->
     supervisor:start_child(?SERVER, ?PINGER(Node, Options)).
 
--spec remove_node/1 :: (atom()) -> 'ok' | {'error', 'running' | 'not_found' | 'simple_one_for_one'}.
+-spec remove_node(atom()) -> 'ok' | {'error', 'running' | 'not_found' | 'simple_one_for_one'}.
 remove_node(Node) ->
     _T = supervisor:terminate_child(?SERVER, Node),
     lager:debug("terminated pinger: ~p", [_T]),
