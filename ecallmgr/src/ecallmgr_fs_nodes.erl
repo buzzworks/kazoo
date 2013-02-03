@@ -665,7 +665,7 @@ handle_info({event, [UUID | Props]}, State) ->
     case props:get_value(<<"Event-Subclass">>, Props, props:get_value(<<"Event-Name">>, Props)) of
         <<"CHANNEL_CREATE">> -> ?MODULE:new_channel(Props, Node);
         <<"CHANNEL_DESTROY">> ->  ?MODULE:destroy_channel(Props, Node);
-        <<"sofia::move_complete">> -> ?MODULE:channel_set_node(Node, UUID);
+        <<"channel_move::move_complete">> -> ?MODULE:channel_set_node(Node, UUID);
         <<"CHANNEL_ANSWER">> -> ?MODULE:channel_set_answered(UUID, true);
         <<"CHANNEL_BRIDGE">> ->
             OtherLeg = get_other_leg(UUID, Props),
@@ -881,7 +881,7 @@ bind_to_fs_events(<<"mod_kazoo", _/binary>>, Node) ->
     ok =  freeswitch:event(Node, ['CHANNEL_CREATE', 'CHANNEL_DESTROY'
                                   ,'CHANNEL_EXECUTE_COMPLETE', 'CHANNEL_ANSWER'
                                   ,'CHANNEL_BRIDGE', 'CHANNEL_UNBRIDGE'
-                                  ,'CUSTOM', 'sofia::move_complete'
+                                  ,'CUSTOM', 'channel_move::move_complete'
                                  ]);
 bind_to_fs_events(_Else, Node) ->
     %% gproc throws a badarg if the binding already exists, and since
@@ -894,7 +894,7 @@ bind_to_fs_events(_Else, Node) ->
     catch gproc:reg({p, l, {event, Node, <<"CHANNEL_ANSWER">>}}),
     catch gproc:reg({p, l, {event, Node, <<"CHANNEL_BRIDGE">>}}),
     catch gproc:reg({p, l, {event, Node, <<"CHANNEL_UNBRIDGE">>}}),
-    catch gproc:reg({p, l, {event, Node, <<"sofia::move_complete">>}}),
+    catch gproc:reg({p, l, {event, Node, <<"channel_move::move_complete">>}}),
     catch gproc:reg({p, l, {event, Node, <<"CHANNEL_EXECUTE_COMPLETE">>}}),
     ok.
 
