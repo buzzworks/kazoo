@@ -125,7 +125,7 @@
 -spec presence/3 :: (ne_binary(), ne_binary() | whapps_call:call(), api_binary() | whapps_call:call()) -> 'ok'.
 
 presence(State, PresenceId) when is_binary(PresenceId) ->
-    presence(State, PresenceId, undefined);
+    presence(State, PresenceId, 'undefined');
 presence(State, Call) ->
     presence(State, whapps_call:from(Call)).
 
@@ -148,7 +148,7 @@ presence(State, PresenceId, Call) ->
 %%--------------------------------------------------------------------
 -spec call_status/1 :: (api_binary() | whapps_call:call()) -> 'ok' |
                                                               {'error', 'no_call_id'}.
-call_status(undefined) -> {error, no_call_id};
+call_status('undefined') -> {error, no_call_id};
 call_status(CallId) when is_binary(CallId) ->
     Command = [{<<"Call-ID">>, CallId}
                | wh_api:default_headers(?APP_NAME, ?APP_VERSION)
@@ -158,7 +158,7 @@ call_status(Call) ->
     call_status(whapps_call:call_id(Call)).
 
 -spec b_call_status/1 :: (api_binary() | whapps_call:call()) -> whapps_api_std_return().
-b_call_status(undefined) -> {error, no_call_id};
+b_call_status('undefined') -> {error, no_call_id};
 b_call_status(CallId) when is_binary(CallId) ->
     Command = [{<<"Call-ID">>, CallId}
                | wh_api:default_headers(?APP_NAME, ?APP_VERSION)
@@ -189,7 +189,7 @@ b_call_status(Call) ->
 -spec channel_status/1 :: (api_binary() | whapps_call:call()) ->
                                   'ok' |
                                   {'error', 'no_channel_id'}.
-channel_status(undefined) -> {error, no_channel_id};
+channel_status('undefined') -> {error, no_channel_id};
 channel_status(CallId) when is_binary(CallId) ->
     Command = [{<<"Call-ID">>, CallId}
                | wh_api:default_headers(?APP_NAME, ?APP_VERSION)
@@ -199,7 +199,7 @@ channel_status(Call) ->
     channel_status(whapps_call:call_id(Call)).
 
 -spec b_channel_status/1 :: (api_binary() | whapps_call:call()) -> whapps_api_std_return().
-b_channel_status(undefined) -> {error, no_channel_id};
+b_channel_status('undefined') -> {error, no_channel_id};
 b_channel_status(ChannelId) when is_binary(ChannelId) ->
     Command = [{<<"Call-ID">>, ChannelId}
                | wh_api:default_headers(?APP_NAME, ?APP_VERSION)
@@ -279,17 +279,20 @@ audio_macro([{tts, Text, Voice, Lang}|T], Call, Queue) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec response/2 :: (ne_binary(), whapps_call:call()) -> {'ok', ne_binary()} |
-                                                         {'error', 'no_response'}.
--spec response/3 :: (ne_binary(), api_binary(), whapps_call:call()) -> {'ok', ne_binary()} |
-                                                                       {'error', 'no_response'}.
--spec response/4 :: (ne_binary(), 'undefined' | binary(), 'undefined' | binary(), whapps_call:call()) -> {'ok', ne_binary()} |
-                                                                                                         {'error', 'no_response'}.
+-spec response/2 :: (ne_binary(), whapps_call:call()) ->
+                            {'ok', ne_binary()} |
+                            {'error', 'no_response'}.
+-spec response/3 :: (ne_binary(), api_binary(), whapps_call:call()) ->
+                            {'ok', ne_binary()} |
+                            {'error', 'no_response'}.
+-spec response/4 :: (ne_binary(), api_binary(), api_binary(), whapps_call:call()) ->
+                            {'ok', ne_binary()} |
+                            {'error', 'no_response'}.
 
 response(Code, Call) ->
-    response(Code, undefined, Call).
+    response(Code, 'undefined', Call).
 response(Code, Cause, Call) ->
-    response(Code, Cause, undefined, Call).
+    response(Code, Cause, 'undefined', Call).
 response(Code, Cause, Media, Call) ->
     CallId = whapps_call:call_id(Call),
     CtrlQ = whapps_call:control_queue(Call),
@@ -306,13 +309,13 @@ response(Code, Cause, Media, Call) ->
 -spec pickup/5 :: (ne_binary(), api_binary(), api_binary() | boolean(), api_binary() | boolean(), whapps_call:call()) -> 'ok'.
 -spec pickup/6 :: (ne_binary(), api_binary(), api_binary() | boolean(), api_binary() | boolean(), api_binary() | boolean(), whapps_call:call()) -> 'ok'.
 pickup(TargetCallId, Call) ->
-    pickup(TargetCallId, undefined, Call).
+    pickup(TargetCallId, 'undefined', Call).
 pickup(TargetCallId, Insert, Call) ->
-    pickup(TargetCallId, Insert, undefined, Call).
+    pickup(TargetCallId, Insert, 'undefined', Call).
 pickup(TargetCallId, Insert, ContinueOnFail, Call) ->
-    pickup(TargetCallId, Insert, ContinueOnFail, undefined, Call).
+    pickup(TargetCallId, Insert, ContinueOnFail, 'undefined', Call).
 pickup(TargetCallId, Insert, ContinueOnFail, ContinueOnCancel, Call) ->
-    pickup(TargetCallId, Insert, ContinueOnFail, ContinueOnCancel, undefined, Call).
+    pickup(TargetCallId, Insert, ContinueOnFail, ContinueOnCancel, 'undefined', Call).
 pickup(TargetCallId, Insert, ContinueOnFail, ContinueOnCancel, ParkAfterPickup, Call) ->
     Command = [{<<"Application-Name">>, <<"call_pickup">>}
                ,{<<"Target-Call-ID">>, TargetCallId}
@@ -378,15 +381,15 @@ flush_dtmf(Call) ->
 %%   can not be used to set system settings
 %% @end
 %%--------------------------------------------------------------------
--spec set/3 :: ('undefined' | wh_json:object(), 'undefined' | wh_json:object(), whapps_call:call()) -> 'ok'.
-set(undefined, CallVars, Call) ->
+-spec set/3 :: (api_object(), api_object(), whapps_call:call()) -> 'ok'.
+set('undefined', CallVars, Call) ->
     set(wh_json:new(), CallVars, Call);
-set(ChannelVars, undefined, Call) ->
+set(ChannelVars, 'undefined', Call) ->
     set(ChannelVars, wh_json:new(), Call);
 set(ChannelVars, CallVars, Call) ->
     case wh_json:is_empty(ChannelVars) andalso wh_json:is_empty(CallVars) of
-        true -> ok;
-        false ->
+        'true' -> 'ok';
+        'false' ->
             Command = [{<<"Application-Name">>, <<"set">>}
                        ,{<<"Insert-At">>, <<"now">>}
                        ,{<<"Custom-Channel-Vars">>, ChannelVars}
@@ -545,11 +548,11 @@ b_hangup(true, Call) ->
 page(Endpoints, Call) ->
     page(Endpoints, ?DEFAULT_TIMEOUT, Call).
 page(Endpoints, Timeout, Call) ->
-    page(Endpoints, Timeout, undefined, Call).
+    page(Endpoints, Timeout, 'undefined', Call).
 page(Endpoints, Timeout, CIDName, Call) ->
-    page(Endpoints, Timeout, CIDName, undefined, Call).
+    page(Endpoints, Timeout, CIDName, 'undefined', Call).
 page(Endpoints, Timeout, CIDName, CIDNumber, Call) ->
-    page(Endpoints, Timeout, CIDName, CIDNumber, undefined, Call).
+    page(Endpoints, Timeout, CIDName, CIDNumber, 'undefined', Call).
 page(Endpoints, Timeout, CIDName, CIDNumber, SIPHeaders, Call) ->
     Command = [{<<"Application-Name">>, <<"page">>}
                ,{<<"Endpoints">>, Endpoints}
@@ -563,11 +566,11 @@ page(Endpoints, Timeout, CIDName, CIDNumber, SIPHeaders, Call) ->
 b_page(Endpoints, Call) ->
     b_page(Endpoints, ?DEFAULT_TIMEOUT, Call).
 b_page(Endpoints, Timeout, Call) ->
-    b_page(Endpoints, Timeout, undefined, Call).
+    b_page(Endpoints, Timeout, 'undefined', Call).
 b_page(Endpoints, Timeout, CIDName, Call) ->
-    b_page(Endpoints, Timeout, CIDName, undefined, Call).
+    b_page(Endpoints, Timeout, CIDName, 'undefined', Call).
 b_page(Endpoints, Timeout, CIDName, CIDNumber, Call) ->
-    b_page(Endpoints, Timeout, CIDName, CIDNumber, undefined, Call).
+    b_page(Endpoints, Timeout, CIDName, CIDNumber, 'undefined', Call).
 b_page(Endpoints, Timeout, CIDName, CIDNumber, SIPHeaders, Call) ->
     page(Endpoints, Timeout, CIDName, CIDNumber, SIPHeaders, Call),
     wait_for_application(<<"page">>).
@@ -583,15 +586,15 @@ b_page(Endpoints, Timeout, CIDName, CIDNumber, SIPHeaders, Call) ->
 -spec bridge/4 :: (wh_json:objects(), api_binary(), api_binary(), whapps_call:call()) -> 'ok'.
 -spec bridge/5 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), whapps_call:call()) -> 'ok'.
 -spec bridge/6 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), api_binary(), whapps_call:call()) -> 'ok'.
--spec bridge/7 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), api_binary(), wh_json:object() | 'undefined', whapps_call:call()) -> 'ok'.
+-spec bridge/7 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), api_binary(), api_object(), whapps_call:call()) -> 'ok'.
 
 -spec b_bridge/2 :: (wh_json:objects(), whapps_call:call()) -> whapps_api_bridge_return().
 -spec b_bridge/3 :: (wh_json:objects(), api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
 -spec b_bridge/4 :: (wh_json:objects(), api_binary(), api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
 -spec b_bridge/5 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), whapps_call:call()) -> whapps_api_bridge_return().
--spec b_bridge/6 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), api_binary(), whapps_call:call()) 
+-spec b_bridge/6 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), api_binary(), whapps_call:call())
                     -> whapps_api_bridge_return().
--spec b_bridge/7 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), api_binary(), wh_json:object() | 'undefined', whapps_call:call())
+-spec b_bridge/7 :: (wh_json:objects(), api_binary(), api_binary(), api_binary(), api_binary(), api_object(), whapps_call:call())
                     -> whapps_api_bridge_return().
 
 bridge(Endpoints, Call) ->
@@ -601,9 +604,9 @@ bridge(Endpoints, Timeout, Call) ->
 bridge(Endpoints, Timeout, Strategy, Call) ->
     bridge(Endpoints, Timeout, Strategy, <<"false">>, Call).
 bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Call) ->
-    bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, undefined, Call).
+    bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, 'undefined', Call).
 bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, Call) ->
-    bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, undefined, Call).
+    bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, 'undefined', Call).
 bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, SIPHeaders, Call) ->
     Command = [{<<"Application-Name">>, <<"bridge">>}
                ,{<<"Endpoints">>, Endpoints}
@@ -622,17 +625,12 @@ b_bridge(Endpoints, Timeout, Call) ->
 b_bridge(Endpoints, Timeout, Strategy, Call) ->
     b_bridge(Endpoints, Timeout, Strategy, <<"false">>, Call).
 b_bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Call) ->
-    b_bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, undefined, Call).
+    b_bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, 'undefined', Call).
 b_bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, Call) ->
-    b_bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, undefined, Call).
+    b_bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, 'undefined', Call).
 b_bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, SIPHeaders, Call) ->
     bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, SIPHeaders, Call),
-    case wait_for_bridge((wh_util:to_integer(Timeout)*1000) + 10000, Call) of
-        {ok, _}=Ok ->
-            Ok;
-        Else ->
-            Else
-    end.
+    wait_for_bridge((wh_util:to_integer(Timeout)*1000) + 10000, Call).
 
 %%--------------------------------------------------------------------
 %% @public
@@ -647,8 +645,7 @@ b_bridge(Endpoints, Timeout, Strategy, IgnoreEarlyMedia, Ringback, SIPHeaders, C
 -spec b_hold/2 :: (wh_timeout() | api_binary(), whapps_call:call()) -> whapps_api_std_return().
 -spec b_hold/3 :: (wh_timeout(), api_binary(), whapps_call:call()) -> whapps_api_std_return().
 
-hold(Call) ->
-    hold(undefined, Call).
+hold(Call) -> hold('undefined', Call).
 hold(MOH, Call) ->
     Command = [{<<"Application-Name">>, <<"hold">>}
                ,{<<"Insert-At">>, <<"now">>}
@@ -656,10 +653,9 @@ hold(MOH, Call) ->
               ],
     send_command(Command, Call).
 
-b_hold(Call) ->
-    b_hold(infinity, undefined, Call).
-b_hold(Timeout, Call) when is_integer(Timeout) orelse Timeout =:= infinity ->
-    b_hold(Timeout, undefined, Call);
+b_hold(Call) -> b_hold('infinity', 'undefined', Call).
+b_hold(Timeout, Call) when is_integer(Timeout) orelse Timeout =:= 'infinity' ->
+    b_hold(Timeout, 'undefined', Call);
 b_hold(MOH, Call) ->
     b_hold(infinity, MOH, Call).
 b_hold(Timeout, MOH, Call) ->
@@ -1005,9 +1001,9 @@ tones_command(Tones, Call) ->
 -spec b_prompt_and_collect_digit/2 :: (ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_prompt_and_collect_digits/4 :: (ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_prompt_and_collect_digits/5 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
--spec b_prompt_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) 
+-spec b_prompt_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call())
                                      -> b_play_and_collect_digits_return().
--spec b_prompt_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call()) 
+-spec b_prompt_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call())
                                      -> b_play_and_collect_digits_return().
 -spec b_prompt_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                       ,whapps_call:call()) -> b_play_and_collect_digits_return().
@@ -1022,7 +1018,7 @@ prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Call) ->
 prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Call) ->
     prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, <<"3000">>, Call).
 prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, Call) ->
-    prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, undefined, Call).
+    prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, 'undefined', Call).
 prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, InvalidPrompt, Call) ->
     prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, InvalidPrompt, <<"\\d+">>, Call).
 prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, InvalidPrompt, Regex, Call) ->
@@ -1037,13 +1033,13 @@ b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Call) ->
 b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Call) ->
     b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, <<"5000">>, Call).
 b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, Call) ->
-    b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, undefined, Call).
+    b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, 'undefined', Call).
 b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, InvalidPrompt, Call) ->
     b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, InvalidPrompt, <<"\\d+">>, Call).
 b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, InvalidPrompt, Regex, Call) ->
     b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, InvalidPrompt, Regex, ?ANY_DIGIT, Call).
 
-b_prompt_and_collect_digits(_MinDigits, _MaxDigits, _Prompt, <<"0">>, _Timeout, undefined, _Regex, _Terminators, _Call) ->
+b_prompt_and_collect_digits(_MinDigits, _MaxDigits, _Prompt, <<"0">>, _Timeout, 'undefined', _Regex, _Terminators, _Call) ->
     {ok, <<>>};
 b_prompt_and_collect_digits(_MinDigits, _MaxDigits, _Prompt, <<"0">>, _Timeout, InvalidPrompt, _Regex, _Terminators, Call) ->
     _ = b_prompt(InvalidPrompt, Call),
@@ -1075,9 +1071,9 @@ b_prompt_and_collect_digits(MinDigits, MaxDigits, Prompt, Tries, Timeout, Invali
 -spec b_play_and_collect_digit/2 :: (ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_play_and_collect_digits/4 :: (ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
 -spec b_play_and_collect_digits/5 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) -> b_play_and_collect_digits_return().
--spec b_play_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call()) 
+-spec b_play_and_collect_digits/6 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), whapps_call:call())
                                      -> b_play_and_collect_digits_return().
--spec b_play_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call()) 
+-spec b_play_and_collect_digits/7 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), whapps_call:call())
                                      -> b_play_and_collect_digits_return().
 -spec b_play_and_collect_digits/8 :: (ne_binary(), ne_binary(), ne_binary(), ne_binary(), ne_binary(), api_binary(), ne_binary()
                                       ,whapps_call:call()) -> b_play_and_collect_digits_return().
@@ -1092,7 +1088,7 @@ play_and_collect_digits(MinDigits, MaxDigits, Media, Call) ->
 play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Call) ->
     play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, <<"3000">>, Call).
 play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, Call) ->
-    play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, undefined, Call).
+    play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, 'undefined', Call).
 play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, MediaInvalid, Call) ->
     play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, MediaInvalid, <<"\\d+">>, Call).
 play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, MediaInvalid, Regex, Call) ->
@@ -1117,13 +1113,13 @@ b_play_and_collect_digits(MinDigits, MaxDigits, Media, Call) ->
 b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Call) ->
     b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, <<"5000">>, Call).
 b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, Call) ->
-    b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, undefined, Call).
+    b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, 'undefined', Call).
 b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, MediaInvalid, Call) ->
     b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, MediaInvalid, <<"[\\d\\*\\#]+">>, Call).
 b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, MediaInvalid, Regex, Call) ->
     b_play_and_collect_digits(MinDigits, MaxDigits, Media, Tries, Timeout, MediaInvalid, Regex, ?ANY_DIGIT, Call).
 
-b_play_and_collect_digits(_MinDigits, _MaxDigits, _Media, <<"0">>, _Timeout, undefined, _Regex, _Terminators, _Call) ->
+b_play_and_collect_digits(_MinDigits, _MaxDigits, _Media, <<"0">>, _Timeout, 'undefined', _Regex, _Terminators, _Call) ->
     {ok, <<>>};
 b_play_and_collect_digits(_MinDigits, _MaxDigits, _Media, <<"0">>, _Timeout, MediaInvalid, _Regex, _Terminators, Call) ->
     _ = b_play(MediaInvalid, Call),
@@ -1284,7 +1280,7 @@ b_flush(Call) ->
 %%--------------------------------------------------------------------
 %% @public
 %% @doc
-%% 
+%%
 %% @end
 %%--------------------------------------------------------------------
 -spec privacy/1 ::  (whapps_call:call()) -> 'ok'.
@@ -1292,20 +1288,16 @@ b_flush(Call) ->
 -spec privacy/2 :: (ne_binary(), whapps_call:call()) -> 'ok'.
 -spec b_privacy/2 :: (ne_binary(), whapps_call:call()) -> whapps_api_error() | {'ok', wh_json:object()}.
 
-privacy(Call) ->
-    privacy(<<"full">>, Call).
-privacy(undefined, Call) ->
-    privacy(Call);
+privacy(Call) -> privacy(<<"full">>, Call).
+privacy('undefined', Call) -> privacy(Call);
 privacy(Mode, Call) ->
     Command = [{<<"Application-Name">>, <<"privacy">>}
                ,{<<"Privacy-Mode">>, Mode}
               ],
     send_command(Command, Call).
 
-b_privacy(Call) ->
-    b_privacy(<<"full">>, Call).
-b_privacy(undefined, Call) ->
-    b_privacy(Call);
+b_privacy(Call) -> b_privacy(<<"full">>, Call).
+b_privacy('undefined', Call) -> b_privacy(Call);
 b_privacy(Mode, Call) ->
     privacy(Mode, Call),
     wait_for_message(<<"privacy">>).
@@ -1333,9 +1325,9 @@ b_privacy(Mode, Call) ->
 -type collect_digits_return() :: {'error','channel_hungup' | 'channel_unbridge' | wh_json:object()} | {'ok', ne_binary()}.
 -spec collect_digits/2 :: (integer() | ne_binary(), whapps_call:call()) -> collect_digits_return().
 -spec collect_digits/3 :: (integer() | ne_binary(), integer() | ne_binary(), whapps_call:call()) -> collect_digits_return().
--spec collect_digits/4 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), whapps_call:call()) 
+-spec collect_digits/4 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), whapps_call:call())
                           -> collect_digits_return().
--spec collect_digits/5 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), api_binary(), whapps_call:call()) 
+-spec collect_digits/5 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), api_binary(), whapps_call:call())
                           -> collect_digits_return().
 -spec collect_digits/6 :: (integer() | ne_binary(), integer() | ne_binary(), integer() | ne_binary(), api_binary(), list()
                            ,whapps_call:call()) -> collect_digits_return().
@@ -1345,7 +1337,7 @@ collect_digits(MaxDigits, Call) ->
 collect_digits(MaxDigits, Timeout, Call) ->
     collect_digits(MaxDigits, Timeout, 2000, Call).
 collect_digits(MaxDigits, Timeout, Interdigit, Call) ->
-    collect_digits(MaxDigits, Timeout, Interdigit, undefined, Call).
+    collect_digits(MaxDigits, Timeout, Interdigit, 'undefined', Call).
 collect_digits(MaxDigits, Timeout, Interdigit, NoopId, Call) ->
     collect_digits(MaxDigits, Timeout, Interdigit, NoopId, [<<"#">>], Call).
 
@@ -1636,8 +1628,7 @@ wait_for_dtmf(Timeout) ->
                                    whapps_api_bridge_return().
 -spec wait_for_bridge/3 :: (wh_timeout(), 'undefined' | fun((wh_json:object()) -> any()), whapps_call:call()) ->
                                    whapps_api_bridge_return().
-wait_for_bridge(Timeout, Call) ->
-    wait_for_bridge(Timeout, undefined, Call).
+wait_for_bridge(Timeout, Call) -> wait_for_bridge(Timeout, 'undefined', Call).
 
 wait_for_bridge(Timeout, Fun, Call) ->
     Start = erlang:now(),
@@ -1649,7 +1640,7 @@ wait_for_bridge(Timeout, Fun, Call) ->
                          true -> ok;
                          false -> fail
                      end,
-            case get_event_type(JObj) of               
+            case get_event_type(JObj) of
                 {<<"error">>, _, <<"bridge">>} ->
                     lager:debug("channel execution error while waiting for bridge: ~s", [wh_json:encode(JObj)]),
                     {error, JObj};
@@ -1890,30 +1881,27 @@ get_event_type(JObj) ->
 %%--------------------------------------------------------------------
 -spec send_command/2 :: (api_terms(), whapps_call:call()) -> 'ok'.
 send_command(Command, Call) when is_list(Command) ->
-    true = whapps_call:is_call(Call),
+    'true' = whapps_call:is_call(Call),
     CustomPublisher = whapps_call:custom_publish_function(Call),
-    CtrlQ = whapps_call:control_queue(Call),    
+    CtrlQ = whapps_call:control_queue(Call),
+
     case is_function(CustomPublisher, 2) of
-        true -> CustomPublisher(Command, Call);
-        false when is_binary(CtrlQ) ->
+        'true' -> CustomPublisher(Command, Call);
+        'false' when is_binary(CtrlQ) ->
             Q = whapps_call:controller_queue(Call),
             CallId = whapps_call:call_id(Call),
             AppName = whapps_call:application_name(Call),
             AppVersion = whapps_call:application_version(Call),
-            case whapps_call:kvs_fetch(cf_exe_pid, Call) of
-                Pid when is_pid(Pid) -> put(amqp_publish_as, Pid), ok;
-                _Else -> ok
+            case whapps_call:kvs_fetch('cf_exe_pid', Call) of
+                Pid when is_pid(Pid) -> put('amqp_publish_as', Pid), 'ok';
+                _Else -> 'ok'
             end,
             Prop = Command ++ [{<<"Call-ID">>, CallId}
                                | wh_api:default_headers(Q, <<"call">>, <<"command">>, AppName, AppVersion)
                               ],
 
             wapi_dialplan:publish_command(CtrlQ, props:filter_undefined(Prop));
-        false -> ok
+        'false' -> 'ok'
     end;
 send_command(JObj, Call) ->
-    case whapps_call:kvs_fetch(cf_exe_pid, Call) of
-        Pid when is_pid(Pid) -> put(amqp_publish_as, Pid);
-        _Else -> ok
-    end,
     send_command(wh_json:to_proplist(JObj), Call).
