@@ -979,8 +979,12 @@ sleep_between_poll() ->
     end.
 
 compact_automatically() ->
-    Default = wh_util:is_true(wh_cache:fetch_local(?WH_COUCH_CACHE, <<"compact_automatically">>)),
-    try wh_util:is_true(whapps_config:get(?CONFIG_CAT, <<"compact_automatically">>, Default)) of
+    Default = case wh_cache:fetch_local(?WH_COUCH_CACHE, <<"compact_automatically">>) of
+                  {ok, D} -> wh_util:is_true(D);
+                  {error, _} -> 'false'
+              end,
+    try whapps_config:get_is_true(?CONFIG_CAT, <<"compact_automatically">>, Default)
+    of
         WhappsConfig -> WhappsConfig
     catch
         _:_ -> Default
