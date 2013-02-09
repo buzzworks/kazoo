@@ -46,12 +46,24 @@
 -include_lib("whistle_couch/include/wh_couch.hrl").
 -include_lib("whistle/include/wh_databases.hrl").
 
--define(SLEEP_BETWEEN_COMPACTION, 60000).
--define(SLEEP_BETWEEN_POLL, 1000).
--define(MAX_COMPACTING_SHARDS, 10).
--define(MAX_COMPACTING_VIEWS, 5).
--define(SLEEP_BETWEEN_VIEWS, 2000).
--define(MAX_WAIT_FOR_COMPACTION_PID, 360000). % five minutes
+-define(SLEEP_BETWEEN_COMPACTION
+        ,whapps_config:get_integer_value(?CONFIG_CAT, <<"sleep_between_compaction">>, 60000)
+       ).
+-define(SLEEP_BETWEEN_POLL
+        ,whapps_config:get_integer_value(?CONFIG_CAT, <<"sleep_between_poll">>, 1000)
+       ).
+-define(MAX_COMPACTING_SHARDS
+        ,whapps_config:get_integer_value(?CONFIG_CAT, <<"max_compacting_shards">>, 10)
+       ).
+-define(MAX_COMPACTING_VIEWS
+        ,whapps_config:get_integer_value(?CONFIG_CAT, <<"max_compacting_views">>, 5)
+       ).
+-define(SLEEP_BETWEEN_VIEWS
+        ,whapps_config:get_integer_value(?CONFIG_CAT, <<"max_compacting_views">>, 2000)
+       ).
+-define(MAX_WAIT_FOR_COMPACTION_PID
+        ,whapps_config:get_integer_value(?CONFIG_CAT, <<"max_compacting_views">>, 360000)
+       ). % five minutes
 
 -define(SERVER, ?MODULE).
 
@@ -529,7 +541,9 @@ compact({compact, N, D, Ss, DDs}, #state{admin_conn=AdminConn
     try lists:split(?MAX_COMPACTING_SHARDS, Ss) of
         {Compact, Shards} ->
             compact_shards(AdminConn, Compact, DDs),
-            Ref = gen_fsm:start_timer(?SLEEP_BETWEEN_COMPACTION, {compact, N, D, Shards, DDs}),
+            Ref = gen_fsm:start_timer(?SLEEP_BETWEEN_COMPACTION
+                                      ,{compact, N, D, Shards, DDs}
+                                     ),
             {next_state, wait, State#state{wait_ref=Ref}}
     catch
         'error':'badarg' ->
@@ -543,7 +557,9 @@ compact({compact, N, D, Ss, DDs}, #state{admin_conn=AdminConn
     try lists:split(?MAX_COMPACTING_SHARDS, Ss) of
         {Compact, Shards} ->
             compact_shards(AdminConn, Compact, DDs),
-            Ref = gen_fsm:start_timer(?SLEEP_BETWEEN_COMPACTION, {compact, N, D, Shards, DDs}),
+            Ref = gen_fsm:start_timer(?SLEEP_BETWEEN_COMPACTION
+                                      ,{compact, N, D, Shards, DDs}
+                                     ),
             {next_state, wait, State#state{wait_ref=Ref}}
     catch
         'error':'badarg' ->
