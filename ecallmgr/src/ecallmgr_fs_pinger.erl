@@ -103,8 +103,9 @@ handle_cast(_Msg, #state{timeout=Timeout}=State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info({flush_channels, Node}, #state{timeout=Timeout}=State) ->
-    lager:info("node ~s has been down past the grace period, flushing channels", [Node]),
+    lager:info("node ~s has been down past the grace period, flushing channels/conferences", [Node]),
     ecallmgr_fs_nodes:flush_node_channels(Node),
+    ecallmgr_fs_nodes:flush_node_conferences(Node),
     {noreply, State, Timeout};
 handle_info(timeout, #state{node=Node, options=Options, timeout=Timeout}=State) ->
     T = Timeout * 2,
